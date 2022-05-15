@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Harita</title>
+    <style>
+      #map {
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+      .myButton{
+        position: absolute;
+        top: 20px;
+        left: 150px;
+        display:block;
+        margin: 1px;
+        padding: 1px;
+        color: white;
+        font-weight: bold;
+        text-decoration:none;
+        font-size: inherit;
+        text-align: center;
+        height: 50px;
+        width: 50px;
+        line-height: .4em;
+        background-color: rgba(0,60,136,0.5);
+        border: none;
+        z-index: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <link rel="stylesheet" href="ol/ol.css" type="text/css">
+    <script src="ol/ol.js"></script>
+
+    <div id="map" style="width: 100%; height: 100%;z-index:1">
+      <button class="myButton" onclick="sekilCiz()">Seç</button>
+      <button class="myButton" onclick="sekilKaldir()" style="top: 20px;left: 250px">Bitir</button>
+    </div>
+
+    <script>
+      var attribution = new ol.control.Attribution({
+        collapsible: false
+      });
+
+      var vectorSource = new ol.source.Vector({ wrapX: false });
+
+      var map = new ol.Map({
+        controls: ol.control.defaults({ attribution: false }).extend([attribution]),
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM({})
+            }),
+            new ol.layer.Vector({
+                source: vectorSource
+            })
+        ],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.fromLonLat([32.882, 39.931]),
+            maxZoom: 18,
+            zoom: 17
+        })
+      });
+
+      let draw;
+      function sekilCiz() {
+        draw = new ol.interaction.Draw({
+            source: vectorSource,
+            type: 'Circle',
+            geometryFunction: ol.interaction.Draw.createBox(),
+        });
+        map.addInteraction(draw);
+      };
+
+      function sekilKaldir() {
+        draw.setActive(false);
+        map.removeInteraction(draw);
+        vectorSource.clear();
+        addInteraction();
+      };
+
+    </script>
+  </body>
+</html>
